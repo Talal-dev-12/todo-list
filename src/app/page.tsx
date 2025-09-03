@@ -10,10 +10,11 @@ function Page() {
     ID: string;
     Completed: string;
   };
+  //hooks
   const [Title, Settitle] = useState<string>("");
   const [desc, Setdesc] = useState<string>("");
   const [Maintask, setMaintask] = useState<task[]>([]);
-  // const renderTask: string = "No task Available";
+  const [error, setError] = useState("");
 
   function deleteHandler(ID: string) {
     setMaintask(Maintask.filter((Task) => Task.ID !== ID));
@@ -21,8 +22,16 @@ function Page() {
 
   function submitHandler(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    console.log(Title);
-    console.log(desc);
+    if (!Title.trim() && !desc.trim()) {
+      setError("Both fields are Required!");
+      return;
+    } else if (!Title.trim()) {
+      setError("Title Required!");
+      return;
+    } else if (!desc.trim()) {
+      setError("Description Required!");
+      return;
+    }
     setMaintask([
       ...Maintask,
       {
@@ -32,7 +41,7 @@ function Page() {
         Completed: "",
       },
     ]);
-
+    setError("");
     Settitle("");
     Setdesc("");
   }
@@ -121,6 +130,11 @@ function Page() {
         <button className="bg-blue-900 text-blue-50 px-4 py-2 rounded-lg shadow-sm shadow-black text-md m-5">
           Add Task
         </button>
+        <span
+          className={error ? "text-red-100 bg-red-900 px-4 py-2 rounded" : ""}
+        >
+          {error}
+        </span>
       </form>
       <hr />
       <div className="p-8 bg-blue-400">
